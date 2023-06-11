@@ -6,7 +6,6 @@ const Order = require("../models/order");
 // require("dotenv").config();
 // const { connect, removeItemFromCart } = require("../mongomongo/database");
 const userRouter = express.Router();
-
 userRouter.post("/api/add-to-cart", auth, async (req, res) => {
   try {
     const { id } = req.body;
@@ -61,8 +60,6 @@ userRouter.delete("/api/remove-from-cart/:id", auth, async (req, res) => {
     console.log(e);
   }
 });
-// '$uri/api/remove-deleted-from-cart/${product.id}'
-// delete("/api/remove-from-cart/:id", auth, async (req, res) => {
 
 userRouter.delete(
   "/api/remove-deleted-from-cart/:id",
@@ -121,18 +118,13 @@ userRouter.post("/api/order", auth, async (req, res) => {
   try {
     const { cart, totalPrice, address } = req.body;
     let products = [];
-    // const theCart = await Order.findById(cart);
-    //edit edit condi
     for (let c = 0; c < cart.length; c++) {
       let product = await Product.findById(cart[c].product._id);
-      //console.log("Got cart Product! " + product);
-      // llllllllll
       let cartQuantity = cart[c].quantity;
       let fcartQuantity = parseInt(cartQuantity);
       //...........................................................................
       let bigCartQuantity = product.quantity;
       let bcartQuantity = parseInt(bigCartQuantity);
-      //bcartQuantity >= fcartQuantity
       let good = true;
       if (product.quantity >= cart[c].quantity) {
         product.quantity -= cart[c].quantity;
@@ -141,9 +133,6 @@ userRouter.post("/api/order", auth, async (req, res) => {
           quantity: cart[c].quantity,
         });
         await product.save();
-        // console.log("Got the list guy!: " + products);
-        // console.log(product.quantity);
-        // console.log(cart[c].quantity);
       } else {
         return res
           .status(400)
@@ -153,8 +142,6 @@ userRouter.post("/api/order", auth, async (req, res) => {
     let user = await User.findById(req.user);
     user.cart = [];
     user = await user.save();
-    // res.json(user);
-    // console.log(products);
     let order = new Order({
       products: products,
       totalPrice,

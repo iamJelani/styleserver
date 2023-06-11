@@ -94,7 +94,7 @@ adminRouter.post("/admin/change-order-status", admin, async (req, res) => {
   }
 });
 
-adminRouter.get("/admin/get-products", admin, async (req, res) => {
+adminRouter.get("/admin/get-products", async (req, res) => {
   try {
     const products = await Product.find({});
     return res.json(products);
@@ -192,7 +192,7 @@ adminRouter.get("/admin/get-order-status/:id", async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
-
+//.....................................................................................................................
 adminRouter.post("/transaction-initialize", async (req, res) => {
   try {
     const response = await axios.post(
@@ -215,6 +215,7 @@ adminRouter.post("/transaction-initialize", async (req, res) => {
     console.log(e);
   }
 });
+//.....................................................................................................................
 
 adminRouter.post("/verify-payment", async (req, res) => {
   const { transactionReference } = req.body;

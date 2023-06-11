@@ -45,12 +45,11 @@ authRouter.post("/api/signin", async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ msg: "Incorrect Password" });
     }
-    //Added const
     const token = jwt.sign({ id: user._id }, "passwordKey");
     res.json({ token, ...user._doc });
   } catch (e) {
     res.status(500).json({ error: "Could not signIn. Check your connection" });
-    console.log("Could not signIn. Check your connection");
+    console.log(`Could not signIn. Check your connection: ${e}`);
   }
 });
 
@@ -60,9 +59,8 @@ authRouter.post("/tokenIsValid", async (req, res) => {
     if (!token) return res.json(false);
     const verified = jwt.verify(token, "passwordKey");
     if (!verified) return res.json(false);
-    //  Try changing findById to findOneById
     const user = await User.findById(verified.id);
-    if (!user) return res, json(false);
+    if (!user) return res.json(false);
     res.json(true);
   } catch (e) {
     res.status(500).json({ error: e.message });

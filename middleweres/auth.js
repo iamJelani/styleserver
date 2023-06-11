@@ -6,7 +6,7 @@ const auth = async (req, res, next) => {
     if (!token)
       return res
         .status(401)
-        .json({ msg: "No auth token: Access Denied. Period" });
+        .json({ msg: "No auth token: Access Denied. Period!" });
 
     const verified = jwt.verify(token, "passwordKey");
     if (!verified)
