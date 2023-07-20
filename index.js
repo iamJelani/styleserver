@@ -13,7 +13,7 @@ const userRouter = require("./routes/user");
 const paystackAuth = require("./middleweres/paystack");
 
 //INIT
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 const app = express();
 const DB =
   "mongodb+srv://pass2000:2000Atlas@cluster0.cz0cqgw.mongodb.net/?retryWrites=true&w=majority";
@@ -36,7 +36,7 @@ mongoose
     console.log("Ready");
   })
   .catch((e) => {
-    console.log("failed because of: " + e);
+    console.log("failed because: " + e);
   });
 
 app.listen(PORT, "0.0.0.0", () => {
