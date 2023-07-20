@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-
 const productSchema = mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
+  },
+  createdAt: {
+    type: String,
+    default: "",
   },
   description: {
     type: String,
@@ -39,7 +42,7 @@ const productSchema = mongoose.Schema({
     type: String,
     // required: true,
   },
-  // Ratings
+  // Ratings s
 });
 //Changed 'product' to "Product"
 

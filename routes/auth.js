@@ -11,7 +11,7 @@ authRouter.post("/api/signup", async (req, res) => {
     const { name, email, password } = req.body;
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ msg: "User already exists!" });
+      return res.status(400).json("User already exists!");
     }
 
     const hashedPassword = await bcryptjs.hash(password, 8);
@@ -38,17 +38,17 @@ authRouter.post("/api/signin", async (req, res) => {
     // console.log(res.toString());
 
     if (!user) {
-      return res.status(400).json({ msg: "User does not exist" });
+      return res.status(400).json("User does not exist");
     }
 
     const isMatch = await bcryptjs.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ msg: "Incorrect Password" });
+      return res.status(400).json("Incorrect Password");
     }
     const token = jwt.sign({ id: user._id }, "passwordKey");
     res.json({ token, ...user._doc });
   } catch (e) {
-    res.status(500).json({ error: "Could not signIn. Check your connection" });
+    res.status(500).json("Could not signIn. Check your connection");
     console.log(`Could not signIn. Check your connection: ${e}`);
   }
 });

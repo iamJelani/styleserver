@@ -4,9 +4,10 @@ const admin = require("../middleweres/admin");
 const paystackAuth = require("../middleweres/paystack");
 const axios = require("axios");
 const cors = require("cors");
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const { Product } = require("../models/product");
 const Order = require("../models/order");
+const User = require("../models/user");
 
 adminRouter.post("/admin/add-product", admin, async (req, res) => {
   try {
@@ -19,6 +20,7 @@ adminRouter.post("/admin/add-product", admin, async (req, res) => {
       category,
       images,
       models,
+      createdAt,
     } = req.body;
     let product = new Product({
       name,
@@ -29,6 +31,7 @@ adminRouter.post("/admin/add-product", admin, async (req, res) => {
       category,
       images,
       models,
+      createdAt,
     });
     product = await product.save();
     res.json(product);
@@ -66,16 +69,28 @@ adminRouter.put("/admin/update-product/:id", admin, async (req, res) => {
     const options = { new: true };
     doc = await Product.findOneAndUpdate(filter, update, options);
     doc = await doc.save();
-
-    // console.log(id);
-    // oldProduct = product;
-    // console.log(oldProduct);
-
-    // oldProduct = await oldProduct.save();
     res.json(doc);
   } catch (e) {
     res.status(500).json({ error: e.message });
     console.log(e);
+  }
+});
+
+adminRouter.post("/admin/add/fcmtoken", async (req, res) => {
+  try {
+    const { fcmToken, email } = req.body;
+    const filter = { email: email };
+    // console.log("Email: " + email);
+    const update = {
+      fcmToken: fcmToken,
+    };
+    let doc = await User.findOneAndUpdate(filter, update);
+    const options = { new: true };
+    doc = await User.findOneAndUpdate(filter, update, options);
+    doc = await doc.save();
+    res.json(doc);
+  } catch (error) {
+    console.log("FcmTokenError:" + error);
   }
 });
 
@@ -103,8 +118,17 @@ adminRouter.get("/admin/get-products", async (req, res) => {
   }
 });
 
+adminRouter.get("/admin/get-users", async (req, res) => {
+  try {
+    const users = await User.find({});
+    // console.log(users);
+    return res.json(users);
+  } catch (error) {
+    console.log("Fetch User Error: " + e);
+    res.status(500).json({ error: e.message });
+  }
+});
 //Delete Product
-
 adminRouter.post("/admin/delete-product", admin, async (req, res) => {
   try {
     const { id } = req.body;
@@ -137,7 +161,6 @@ adminRouter.get("/admin/analytics", admin, async (req, res) => {
           orders[i].products[j].quantity * orders[i].products[j].product.price;
       }
     }
-
     //  CATEGORYWISE ORDER FETCHING
     let sofasEarnings = (await fetchCategoryWiseProducts("Sofas")) ?? 0;
     let armchairsEarnings = (await fetchCategoryWiseProducts("Armchairs")) ?? 0;

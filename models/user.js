@@ -40,6 +40,10 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "user",
   },
+  fcmToken: {
+    type: String,
+    default: "",
+  },
   cart: [
     {
       product: productSchema,
