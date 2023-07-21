@@ -8,6 +8,7 @@ const cors = require("cors");
 const { Product } = require("../models/product");
 const Order = require("../models/order");
 const User = require("../models/user");
+require("dotenv").config();
 
 adminRouter.post("/admin/add-product", admin, async (req, res) => {
   try {
@@ -217,6 +218,7 @@ adminRouter.get("/admin/get-order-status/:id", async (req, res) => {
 });
 //.....................................................................................................................
 adminRouter.post("/transaction-initialize", async (req, res) => {
+  const paystackSecretKey = process.env.PSK;
   try {
     const response = await axios.post(
       "https://api.paystack.co/transaction/initialize",
@@ -226,12 +228,12 @@ adminRouter.post("/transaction-initialize", async (req, res) => {
       },
       {
         headers: {
-          Authorization: `Bearer sk_test_bf32db4917b3d3c664de7ac036c9e9c73ead384a`,
+          Authorization: `Bearer ${paystackSecretKey}`,
           "Content-Type": "application/json",
         },
       }
     );
-    // console.log(response.data);
+    console.log(response.data);
     res.json(response.data);
   } catch (e) {
     res.status(500).json({ error: e.message });
@@ -242,8 +244,7 @@ adminRouter.post("/transaction-initialize", async (req, res) => {
 
 adminRouter.post("/verify-payment", async (req, res) => {
   const { transactionReference } = req.body;
-  // const transactionReference = req.body;
-  const paystackSecretKey = "sk_test_bf32db4917b3d3c664de7ac036c9e9c73ead384a";
+  const paystackSecretKey = process.env.PSK;
 
   console.log(transactionReference);
 
@@ -258,7 +259,6 @@ adminRouter.post("/verify-payment", async (req, res) => {
     );
 
     const body = apiResponse.data;
-
     if (body.status && body.data.status === "success") {
       res.status(200).json({ message: "Payment verified successfully" });
     } else {

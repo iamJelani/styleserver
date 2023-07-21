@@ -7,9 +7,7 @@ const paystackAuth = async (req, res, next) => {
       "sk_test_bf32db4917b3d3c664de7ac036c9e9c73ead384a"
     );
     if (!token)
-      return res
-        .status(401)
-        .json({ msg: "No auth token: Access Denied. Period" });
+      return res.status(401).json({ msg: "No auth token: Access Denied." });
 
     const verified = jwt.verify(token, "passwordKey");
     if (!verified)
